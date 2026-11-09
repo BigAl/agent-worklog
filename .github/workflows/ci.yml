@@ -1,0 +1,47 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  gitleaks:
+    name: gitleaks (secret scan)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # scan full history, not just the tip
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  sanity:
+    name: syntax + manifest checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: core module imports and exports
+        run: |
+          node --input-type=module -e '
+            const m = await import("./plugins/worklog/tools/worklog-core.mjs");
+            for (const fn of ["recordMark", "appendLogged", "aggregateDay", "ticketFor"])
+              if (typeof m[fn] !== "function") throw new Error(`missing export: ${fn}`);
+            console.log("core exports OK");
+          '
+      - name: hook parses
+        run: node --check plugins/worklog/tools/worklog-claude-hook.mjs
+      - name: report CLI parses
+        run: node --check plugins/worklog/tools/worklog-report.mjs
+      - name: manifests are valid JSON
+        run: |
+          python3 -m json.tool .claude-plugin/marketplace.json > /dev/null
+          python3 -m json.tool plugins/worklog/.claude-plugin/plugin.json > /dev/null
+      - name: installer is executable and clean
+        run: |
+          bash -n plugins/worklog/install.sh
+          test -x plugins/worklog/install.sh
