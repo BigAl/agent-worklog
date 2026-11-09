@@ -5,6 +5,14 @@ description: Review and submit agent work effort hours to JIRA worklogs. Use whe
 
 # Worklog
 
+Tracks agent work effort into JIRA worklogs with a human confirmation gate.
+Prerequisite: the tracker is installed (OpenCode plugin / Claude hook /
+`~/.local/share/worklog/`). If `~/.local/share/worklog/lib/worklog-core.mjs`
+or the report CLI below is missing, install it first: this skill ships inside
+the plugin folder — run `install.sh` from there (see the plugin's README),
+then continue. Nothing is monitored beyond agent-session activity; no
+keystroke or screen capture.
+
 OpenCode's plugin and Claude Code's hook append activity marks to per-day
 ledgers under `~/.local/share/worklog/` (`marks-<YYYY-MM-DD>.ndjson`,
 override with `WORKLOG_DATA_DIR`). Credited time is the union of gaps
