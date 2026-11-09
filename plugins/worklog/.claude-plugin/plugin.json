@@ -1,0 +1,5 @@
+{
+  "name": "worklog",
+  "version": "0.1.0",
+  "description": "Agent work-effort tracker: drafts JIRA worklogs from live session activity (OpenCode + Claude Code), reviewed and submitted by a person via /worklog. Nothing posts without explicit confirmation."
+}

@@ -1,0 +1,13 @@
+{
+  "name": "agent-worklog",
+  "owner": {
+    "name": "BigAl"
+  },
+  "plugins": [
+    {
+      "name": "worklog",
+      "source": "./plugins/worklog",
+      "description": "Agent work-effort tracker: OpenCode plugin + Claude Code hook append activity marks to a local ledger; the /worklog skill aggregates, confirms with you, and posts JIRA worklogs. No keystroke or screen monitoring."
+    }
+  ]
+}
